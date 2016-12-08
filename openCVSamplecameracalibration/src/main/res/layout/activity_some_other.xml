@@ -14,16 +14,6 @@
       android:scaleType="centerInside"
   />
 
-  <ImageView
-      android:id="@+id/img_edited"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_margin="20dp"
-      android:layout_weight="1"
-      android:contentDescription="@string/content_desc_test"
-      android:scaleType="centerInside"
-  />
-
   <Button
       android:id="@+id/btn_camera"
       android:layout_width="wrap_content"
@@ -36,5 +26,23 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/gallery"/>
+
+
+  <ImageView
+      android:id="@+id/img_edited"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_margin="20dp"
+      android:layout_weight="1"
+      android:contentDescription="@string/content_desc_test"
+      android:scaleType="centerInside"
+  />
+
+  <Button
+      android:id="@+id/btn_process"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/process"
+  />
 
 </LinearLayout>

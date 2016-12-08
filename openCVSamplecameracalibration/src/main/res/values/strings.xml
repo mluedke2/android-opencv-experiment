@@ -18,5 +18,6 @@
   <string name="content_desc_test">Test</string>
   <string name="camera">Camera</string>
   <string name="gallery">Gallery</string>
+  <string name="process">Process</string>
 
 </resources>
