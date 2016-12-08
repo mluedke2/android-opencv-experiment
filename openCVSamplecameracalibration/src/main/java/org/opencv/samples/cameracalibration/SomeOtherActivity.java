@@ -17,6 +17,7 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import butterknife.BindView;
@@ -134,7 +135,12 @@ public class SomeOtherActivity extends Activity {
 
         Mat outmat = new Mat();
 
-        Imgproc.blur(mat, outmat, mat.size());
+        // blur
+        //Imgproc.blur(mat, outmat, mat.size());
+
+        // a better blur -- making the last number higher makes blurrier
+        Imgproc.GaussianBlur(mat, outmat, new Size(15,15), 10);
+
 
         Bitmap newImage = Bitmap.createBitmap(
           (int)mat.size().width,
