@@ -207,13 +207,11 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
   }
 
   public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
-    return mOnCameraFrameRender.render(inputFrame);
+    return inputFrame.gray();
   }
 
   @Override
   public boolean onTouch(View v, MotionEvent event) {
-    Log.d(TAG, "onTouch invoked");
-
     mCalibrator.addCorners();
     return false;
   }
