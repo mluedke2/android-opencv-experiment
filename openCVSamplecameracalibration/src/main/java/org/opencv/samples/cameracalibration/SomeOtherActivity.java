@@ -17,7 +17,6 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
-import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import butterknife.BindView;
@@ -36,9 +35,11 @@ public class SomeOtherActivity extends Activity {
   @BindView(R.id.img_original)
   ImageView originalImageView;
 
-  @BindView(R.id.img_edited)
-  ImageView editedImageView;
+  @BindView(R.id.img_edited1)
+  ImageView editedImageView1;
 
+  @BindView(R.id.img_edited2)
+  ImageView editedImageView2;
 
   private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
     @Override
@@ -133,22 +134,21 @@ public class SomeOtherActivity extends Activity {
 
         Utils.bitmapToMat(bitmap, mat);
 
-        Mat outmat = new Mat();
-
-        // blur
-        //Imgproc.blur(mat, outmat, mat.size());
-
-        // a better blur -- making the last number higher makes blurrier
-        Imgproc.GaussianBlur(mat, outmat, new Size(15,15), 10);
-
-
-        Bitmap newImage = Bitmap.createBitmap(
+        Mat outmat1 = new Mat();
+        Imgproc.cvtColor(mat, outmat1, Imgproc.COLOR_RGB2GRAY);
+        Bitmap newImage1 = Bitmap.createBitmap(
           (int)mat.size().width,
           (int)mat.size().height, Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(outmat1, newImage1);
+        editedImageView1.setImageBitmap(newImage1);
 
-        Utils.matToBitmap(outmat, newImage);
-
-        editedImageView.setImageBitmap(newImage);
+        Mat outmat2 = new Mat();
+        Imgproc.cvtColor(mat, outmat2, Imgproc.COLOR_BGR2GRAY);
+        Bitmap newImage2 = Bitmap.createBitmap(
+          (int)mat.size().width,
+          (int)mat.size().height, Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(outmat1, newImage2);
+        editedImageView2.setImageBitmap(newImage2);
       }
     }
   }
