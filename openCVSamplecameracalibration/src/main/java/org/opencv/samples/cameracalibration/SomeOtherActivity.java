@@ -17,7 +17,11 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
+
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -133,11 +137,18 @@ public class SomeOtherActivity extends Activity {
         editedImageView2.setImageBitmap(convertToGray(bitmap, Imgproc.COLOR_BGR2GRAY));
       }
     }
+
+    // doing this a few times for fun
+    findMinEnclosingCircle();
+    findMinEnclosingCircle();
+    findMinEnclosingCircle();
+    findMinEnclosingCircle();
+    findMinEnclosingCircle();
   }
 
-  private Bitmap convertToGray(Bitmap rgb, int conversion) {
+  private Bitmap convertToGray(Bitmap original, int conversion) {
     Mat mat = new Mat();
-    Utils.bitmapToMat(rgb, mat);
+    Utils.bitmapToMat(original, mat);
     Mat outmat = new Mat();
     Imgproc.cvtColor(mat, outmat, conversion);
     Bitmap newImage = Bitmap.createBitmap(
@@ -145,5 +156,36 @@ public class SomeOtherActivity extends Activity {
       (int)mat.size().height, Bitmap.Config.ARGB_8888);
     Utils.matToBitmap(outmat, newImage);
     return newImage;
+  }
+
+  private void findMinEnclosingCircle() {
+    double min = 1;
+    double max = 100;
+
+    Point randomPoint1 = randomPointInRange(min, max);
+    Point randomPoint2 = randomPointInRange(min, max);
+    Point randomPoint3 = randomPointInRange(min, max);
+    Point randomPoint4 = randomPointInRange(min, max);
+    Point randomPoint5 = randomPointInRange(min, max);
+
+    MatOfPoint2f points = new MatOfPoint2f(randomPoint1, randomPoint2, randomPoint3,
+      randomPoint4, randomPoint5);
+
+    Point center = new Point();
+    float[] radius = new float[1];
+    Imgproc.minEnclosingCircle(points, center, radius);
+
+    Log.d("MYTEST", "\n\npt1: " + randomPoint1 + " pt2: " + randomPoint2 + " pt3: " + randomPoint3
+      + " pt4: " + randomPoint4 + " pt5: " + randomPoint5 + " center: " + center + " radius: " +
+      radius[0]);
+  }
+
+  private Point randomPointInRange(double min, double max) {
+    return new Point(randomDoubleInRange(min, max), randomDoubleInRange(min, max));
+  }
+
+  private double randomDoubleInRange(double min, double max) {
+    Random random = new Random();
+    return min + (max - min) * random.nextDouble();
   }
 }
