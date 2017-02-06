@@ -129,27 +129,21 @@ public class SomeOtherActivity extends Activity {
       Bitmap bitmap = drawable.getBitmap();
 
       if (bitmap != null) {
-
-        Mat mat = new Mat();
-
-        Utils.bitmapToMat(bitmap, mat);
-
-        Mat outmat1 = new Mat();
-        Imgproc.cvtColor(mat, outmat1, Imgproc.COLOR_RGB2GRAY);
-        Bitmap newImage1 = Bitmap.createBitmap(
-          (int)mat.size().width,
-          (int)mat.size().height, Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(outmat1, newImage1);
-        editedImageView1.setImageBitmap(newImage1);
-
-        Mat outmat2 = new Mat();
-        Imgproc.cvtColor(mat, outmat2, Imgproc.COLOR_BGR2GRAY);
-        Bitmap newImage2 = Bitmap.createBitmap(
-          (int)mat.size().width,
-          (int)mat.size().height, Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(outmat1, newImage2);
-        editedImageView2.setImageBitmap(newImage2);
+        editedImageView1.setImageBitmap(convertToGray(bitmap, Imgproc.COLOR_RGB2GRAY));
+        editedImageView2.setImageBitmap(convertToGray(bitmap, Imgproc.COLOR_BGR2GRAY));
       }
     }
+  }
+
+  private Bitmap convertToGray(Bitmap rgb, int conversion) {
+    Mat mat = new Mat();
+    Utils.bitmapToMat(rgb, mat);
+    Mat outmat = new Mat();
+    Imgproc.cvtColor(mat, outmat, conversion);
+    Bitmap newImage = Bitmap.createBitmap(
+      (int)mat.size().width,
+      (int)mat.size().height, Bitmap.Config.ARGB_8888);
+    Utils.matToBitmap(outmat, newImage);
+    return newImage;
   }
 }
