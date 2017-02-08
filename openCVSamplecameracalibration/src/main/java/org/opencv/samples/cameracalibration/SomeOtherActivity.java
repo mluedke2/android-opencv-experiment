@@ -20,6 +20,7 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.Random;
@@ -145,6 +146,8 @@ public class SomeOtherActivity extends Activity {
         editedImageView1.setImageBitmap(newImage);
 
         connectedComponentsWithStats(grayMat);
+
+        insertGaussianBlur(bitmap, editedImageView2);
       }
     }
 
@@ -154,6 +157,19 @@ public class SomeOtherActivity extends Activity {
     findMinEnclosingCircle();
     findMinEnclosingCircle();
     findMinEnclosingCircle();
+  }
+
+  private void insertGaussianBlur(Bitmap original, ImageView imageView) {
+    Mat mat = new Mat();
+    Utils.bitmapToMat(original, mat);
+    Mat outmat = new Mat(mat.size(), CvType.CV_8UC1);
+    Size size = new Size(11, 11);
+    Imgproc.GaussianBlur(mat, outmat, size, 10);
+    Bitmap newImage = Bitmap.createBitmap(
+      (int)outmat.size().width,
+      (int)outmat.size().height, Bitmap.Config.ARGB_8888);
+    Utils.matToBitmap(outmat, newImage);
+    imageView.setImageBitmap(newImage);
   }
 
   private Mat convertToGray(Bitmap original, int conversion) {
