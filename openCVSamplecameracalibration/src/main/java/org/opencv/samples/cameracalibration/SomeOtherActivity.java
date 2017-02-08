@@ -16,6 +16,7 @@ import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
@@ -133,8 +134,17 @@ public class SomeOtherActivity extends Activity {
       Bitmap bitmap = drawable.getBitmap();
 
       if (bitmap != null) {
-        editedImageView1.setImageBitmap(convertToGray(bitmap, Imgproc.COLOR_RGB2GRAY));
-        editedImageView2.setImageBitmap(convertToGray(bitmap, Imgproc.COLOR_BGR2GRAY));
+
+        Mat grayMat = convertToGray(bitmap, Imgproc.COLOR_BGR2GRAY);
+
+        Bitmap newImage = Bitmap.createBitmap(
+          (int)grayMat.size().width,
+          (int)grayMat.size().height, Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(grayMat, newImage);
+
+        editedImageView1.setImageBitmap(newImage);
+
+        connectedComponentsWithStats(grayMat);
       }
     }
 
@@ -146,16 +156,12 @@ public class SomeOtherActivity extends Activity {
     findMinEnclosingCircle();
   }
 
-  private Bitmap convertToGray(Bitmap original, int conversion) {
+  private Mat convertToGray(Bitmap original, int conversion) {
     Mat mat = new Mat();
     Utils.bitmapToMat(original, mat);
-    Mat outmat = new Mat();
+    Mat outmat = new Mat(mat.size(), CvType.CV_8UC1);
     Imgproc.cvtColor(mat, outmat, conversion);
-    Bitmap newImage = Bitmap.createBitmap(
-      (int)mat.size().width,
-      (int)mat.size().height, Bitmap.Config.ARGB_8888);
-    Utils.matToBitmap(outmat, newImage);
-    return newImage;
+    return outmat;
   }
 
   private void findMinEnclosingCircle() {
@@ -187,5 +193,23 @@ public class SomeOtherActivity extends Activity {
   private double randomDoubleInRange(double min, double max) {
     Random random = new Random();
     return min + (max - min) * random.nextDouble();
+  }
+
+  private void connectedComponentsWithStats(Mat image) {
+
+    Mat binaryMat = new Mat(image.size(), CvType.CV_8UC1); // CvType.CV_8UC1 is 1-channel b&w
+
+    Imgproc.adaptiveThreshold(image, binaryMat, 100, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc
+      .THRESH_BINARY, 7, 0);
+
+    Mat labelsMat = new Mat();
+    Mat statsMat = new Mat();
+    Mat centroidMat = new Mat();
+
+    Imgproc.connectedComponentsWithStats(binaryMat, labelsMat, statsMat, centroidMat);
+
+    Log.d("MYTEST", "labelsMat: " + labelsMat.toString());
+    Log.d("MYTEST", "statsMat: " + statsMat.toString());
+    Log.d("MYTEST", "centroidMat: " + centroidMat.toString());
   }
 }
