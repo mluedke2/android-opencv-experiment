@@ -47,6 +47,9 @@ public class SomeOtherActivity extends Activity {
   @BindView(R.id.img_edited2)
   ImageView editedImageView2;
 
+  @BindView(R.id.img_edited3)
+  ImageView editedImageView3;
+
   private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
     @Override
     public void onManagerConnected(int status) {
@@ -148,6 +151,8 @@ public class SomeOtherActivity extends Activity {
         connectedComponentsWithStats(grayMat);
 
         insertGaussianBlur(bitmap, editedImageView2);
+
+        insertBlackHat(bitmap, editedImageView3);
       }
     }
 
@@ -162,7 +167,7 @@ public class SomeOtherActivity extends Activity {
   private void insertGaussianBlur(Bitmap original, ImageView imageView) {
     Mat mat = new Mat();
     Utils.bitmapToMat(original, mat);
-    Mat outmat = new Mat(mat.size(), CvType.CV_8UC1);
+    Mat outmat = new Mat();
     Size size = new Size(11, 11);
     Imgproc.GaussianBlur(mat, outmat, size, 10);
     Bitmap newImage = Bitmap.createBitmap(
@@ -227,5 +232,19 @@ public class SomeOtherActivity extends Activity {
     Log.d("MYTEST", "labelsMat: " + labelsMat.toString());
     Log.d("MYTEST", "statsMat: " + statsMat.toString());
     Log.d("MYTEST", "centroidMat: " + centroidMat.toString());
+  }
+
+  private void insertBlackHat(Bitmap original, ImageView target) {
+    Mat mat = new Mat();
+    Utils.bitmapToMat(original, mat);
+    Mat outmat = new Mat();
+    Size size = new Size(11, 11);
+    Mat kernel = Imgproc.getStructuringElement(2, size);
+    Imgproc.morphologyEx(mat, outmat, Imgproc.MORPH_BLACKHAT, kernel);
+    Bitmap newImage = Bitmap.createBitmap(
+      (int)outmat.size().width,
+      (int)outmat.size().height, Bitmap.Config.ARGB_8888);
+    Utils.matToBitmap(outmat, newImage);
+    target.setImageBitmap(newImage);
   }
 }
